@@ -55,6 +55,8 @@ jobs:
                   echo "app_version=\${nextRelease.version}" >> \$GITHUB_OUTPUT
             - - "@semantic-release/git"
               - message: "chore(release): bump \${nextRelease.version}"
+                assets:
+                  - "gradle.properties"
             - "@semantic-release/github"
           EOF
       - name: install semantic-release dependencies

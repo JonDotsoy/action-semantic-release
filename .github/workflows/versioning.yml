@@ -31,8 +31,7 @@ env:
 
 jobs:
   versioning:
-    runs-on:
-      group: composable_gcp_ecommerce
+    runs-on: ubuntu-latest
     outputs:
       app_version: ${{ steps.semantic-release.outputs.app_version }}
     steps:

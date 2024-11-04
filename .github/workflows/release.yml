@@ -1,0 +1,5 @@
+on: push
+
+jobs:
+    release:
+        uses: ./.github/workflows/versioning.yml

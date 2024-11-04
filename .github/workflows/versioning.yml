@@ -37,6 +37,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: semantic-release Deps Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            package.json
+            package-lock.json
+          key: semantic-release-deps-cache-${{ runner.os }}-node-${{ env.NODE_VERSION }}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:

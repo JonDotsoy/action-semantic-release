@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/JonDotsoy/action-semantic-release/compare/demo-v1.1.0...demo-v1.1.1) (2024-11-04)
+
+
+### Bug Fixes
+
+* upgrade version ([8dd3640](https://github.com/JonDotsoy/action-semantic-release/commit/8dd3640bfb085f259ce53a2fc59c6e64ef260aa9))
+
 # [1.1.0](https://github.com/JonDotsoy/action-semantic-release/compare/demo-v1.0.0...demo-v1.1.0) (2024-11-04)
 
 

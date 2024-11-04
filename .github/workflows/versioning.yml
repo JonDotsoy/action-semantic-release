@@ -18,6 +18,9 @@ on:
       app_version:
         description: App Version
         value: ${{ jobs.versioning.outputs.app_version }}
+      app_head:
+        description: Git HEAD
+        value: ${{ jobs.versioning.outputs.app_head }}
 
 permissions:
   id-token: write
@@ -35,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       app_version: ${{ steps.semantic-release.outputs.app_version }}
+      app_head: ${{ steps.semantic-release.outputs.app_head }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,9 +65,10 @@ jobs:
             - - "@semantic-release/exec"
               - verifyReleaseCmd: |
                   sed -E 's/^appVersion\=(.+)$/appVersion\=\${nextRelease.version}/g' gradle.properties > /tmp/versioning.gradle.properties && cat /tmp/versioning.gradle.properties > gradle.properties
-                  echo "app_version=\${nextRelease.version}" >> \$GITHUB_OUTPUT
+                  echo "app_version=\${nextRelease.gitTag}" >> \$GITHUB_OUTPUT
+                  echo "app_head=\${nextRelease.gitHead}" >> \$GITHUB_OUTPUT
             - - "@semantic-release/git"
-              - message: "chore(release): bump \${nextRelease.version}"
+              - message: "chore(release): bump \${nextRelease.gitTag}"
                 assets:
                   - "gradle.properties"
                   - "docs/CHANGELOG.md"

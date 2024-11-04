@@ -31,7 +31,6 @@ permissions:
   issues: write
   deployments: write
 
-
 env:
   NODE_VERSION: "20.x"
   SEMANTIC_RELEASE_VERSION: "24.2.0"

@@ -65,6 +65,7 @@ jobs:
               - message: "chore(release): bump \${nextRelease.version}"
                 assets:
                   - "gradle.properties"
+                  - "docs/CHANGELOG.md"
             - "@semantic-release/github"
           EOF
       - name: install semantic-release dependencies

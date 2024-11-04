@@ -28,6 +28,7 @@ permissions:
 
 env:
   NODE_VERSION: "20.x"
+  SEMANTIC_RELEASE_VERSION: "24.2.0"
 
 jobs:
   versioning:
@@ -80,7 +81,7 @@ jobs:
       - name: Run semantic-release
         id: semantic-release
         run: |
-          npx semantic-release \
+          npx semantic-release@${{ env.SEMANTIC_RELEASE_VERSION }} \
             --tag-format ${{ inputs.tag_format }} \
             --branches ${{ inputs.branch }}
 

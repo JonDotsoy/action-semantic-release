@@ -1,0 +1,78 @@
+name: Versioning package
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        default: ${{ github.ref_name }}
+        type: string
+        required: false
+        description: The branch to release from.
+      tag_format:
+        type: string
+        default: "v\\${version}"
+        required: false
+        description: The Git tag format used by semantic-release to identify releases
+
+    outputs:
+      app_version:
+        description: App Version
+        value: ${{ jobs.versioning.outputs.app_version }}
+
+permissions:
+  id-token: write
+  contents: write
+  issues: write
+  deployments: write
+
+
+env:
+  NODE_VERSION: "20.x"
+
+jobs:
+  versioning:
+    runs-on:
+      group: composable_gcp_ecommerce
+    outputs:
+      app_version: ${{ steps.semantic-release.outputs.app_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Configure sematic-release
+        run: |
+          cat << EOF > .releaserc.yml
+          plugins:
+            - "@semantic-release/commit-analyzer"
+            - "@semantic-release/release-notes-generator"
+            - - "@semantic-release/changelog"
+              - changelogFile: 'docs/CHANGELOG.md'
+            - - "@semantic-release/exec"
+              - verifyReleaseCmd: |
+                  sed -E 's/^appVersion\=(.+)$/appVersion\=\${nextRelease.version}/g' gradle.properties > /tmp/versioning.gradle.properties && cat /tmp/versioning.gradle.properties > gradle.properties
+                  echo "app_version=\${nextRelease.version}" >> \$GITHUB_OUTPUT
+            - - "@semantic-release/git"
+              - message: "chore(release): bump \${nextRelease.version}"
+            - "@semantic-release/github"
+          EOF
+      - name: install semantic-release dependencies
+        run: |
+          npm install \
+            @semantic-release/commit-analyzer \
+            @semantic-release/release-notes-generator \
+            @semantic-release/changelog \
+            @semantic-release/exec \
+            @semantic-release/git \
+            @semantic-release/github
+      - name: Run semantic-release
+        id: semantic-release
+        run: |
+          npx semantic-release \
+            --tag-format ${{ inputs.tag_format }} \
+            --branches ${{ inputs.branch }}
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
